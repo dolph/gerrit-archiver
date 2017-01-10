@@ -30,6 +30,7 @@ fn main() {
     // Gather information on the current user (for UX).
     let user = users::get_user_by_uid(users::get_current_uid()).unwrap();
     options.gerrit_username = user.name().to_string();
+    debug!("Defaulted Gerrit username to UNIX username: {}", options.gerrit_username);
 
     // Parse command line arguments.
     {
