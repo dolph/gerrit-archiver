@@ -8,6 +8,6 @@ repository = "https://github.com/dolph/gerrit-archiver"
 documentation = "https://github.com/dolph/gerrit-archiver"
 
 [dependencies]
-argparse="*"
-env_logger="*"
-log="*"
+argparse = "*"
+env_logger = "*"
+log = "*"
