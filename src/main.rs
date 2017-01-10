@@ -2,6 +2,7 @@
 extern crate env_logger;
 
 extern crate argparse;
+extern crate users;
 
 struct Options {
     verbose: bool,
@@ -25,6 +26,10 @@ fn main() {
         gerrit_username: "".to_string(),
         identity_file: "~/.ssh/id_rsa".to_string(),
     };
+
+    // Gather information on the current user (for UX).
+    let user = users::get_user_by_uid(users::get_current_uid()).unwrap();
+    options.gerrit_username = user.name().to_string();
 
     // Parse command line arguments.
     {
@@ -58,7 +63,7 @@ fn main() {
         parser.parse_args_or_exit();
     }
 
-    info!("Hello, world.");
+    info!("Hello, {}.", options.gerrit_username);
 }
 
 #[cfg(test)]
