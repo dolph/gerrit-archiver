@@ -42,7 +42,7 @@ fn main() {
             "Enable verbose output.");
         parser.refer(&mut options.gerrit_host)
             .add_argument("gerrit-host", argparse::Store,
-            "Gerrit username.");
+            "Gerrit hostname.");
         parser.refer(&mut options.gerrit_port_number)
             .add_argument("gerrit-port", argparse::Store,
             "Gerrit port number.");
