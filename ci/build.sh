@@ -36,7 +36,7 @@ cargo test --verbose
 
 # Smoke test the result.
 cargo run
-./target/release/skeleton
-./target/release/skeleton --help
-./target/release/skeleton --version
-./target/release/skeleton --verbose
+./target/release/gerrit-archiver
+./target/release/gerrit-archiver --help
+./target/release/gerrit-archiver --version
+./target/release/gerrit-archiver --verbose

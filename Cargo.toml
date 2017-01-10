@@ -1,11 +1,11 @@
 [package]
-name = "skeleton"
+name = "gerrit-archiver"
 version = "0.0.1"
 authors = [ "Dolph Mathews <dolph.mathews@gmail.com>" ]
-description = "Skeleton for Rust-based projects."
+description = "Archive gerrit code reviews for later analysis."
 license = "Apache-2.0/MIT"
-repository = "https://github.com/dolph/rust-skeleton"
-documentation = "https://github.com/dolph/rust-skeleton"
+repository = "https://github.com/dolph/gerrit-archiver"
+documentation = "https://github.com/dolph/gerrit-archiver"
 
 [dependencies]
 argparse="*"

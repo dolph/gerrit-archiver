@@ -1,4 +1,4 @@
-rust-skeleton
-=============
+gerrit-archiver
+===============
 
-A skeleton for rust-lang projects.
+Archive Gerrit code reviews for later analysis.

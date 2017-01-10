@@ -3,7 +3,7 @@ resources:
 - name: repo
   type: git
   source:
-    uri: https://github.com/dolph/rust-skeleton.git
+    uri: https://github.com/dolph/gerrit-archiver.git
     branch: master
 - name: daily
   type: time
