@@ -1,6 +1,5 @@
 #!/bin/bash
-set -e
-set -x
+set -ex
 
 DIR=`dirname $(readlink -f $0)`
 cd $DIR/..
@@ -15,16 +14,13 @@ cargo --version
 # cargo install clippy
 # cargo clippy
 
-# Build the project.
-cargo build --release
-
 # Test the project.
 cargo test --verbose
 
 # Smoke test the result.
 export RUST_LOG=debug
 cargo run
-./target/release/gerrit-archiver
-./target/release/gerrit-archiver --help
-./target/release/gerrit-archiver --version
-./target/release/gerrit-archiver --verbose
+./target/debug/gerrit-archiver
+./target/debug/gerrit-archiver --help
+./target/debug/gerrit-archiver --version
+./target/debug/gerrit-archiver --verbose
