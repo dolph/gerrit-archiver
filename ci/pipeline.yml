@@ -1,19 +1,19 @@
 ---
 resources:
+- name: image
+  type: docker-image
+  source:
+    repository: dolphm/ubuntu-latest-rust-nightly
 - name: repo
   type: git
   source:
     uri: https://github.com/dolph/gerrit-archiver.git
     branch: master
-- name: daily
-  type: time
-  source: {interval: 24h}
-
 
 jobs:
 - name: build
   plan:
-  - get: daily
+  - get: image
     trigger: true
   - get: repo
     trigger: true
@@ -23,8 +23,7 @@ jobs:
       image_resource:
         type: docker-image
         source:
-          repository: ubuntu
-          tag: "latest"
+          repository: dolphm/ubuntu-latest-rust-nightly
       inputs:
       - name: repo
       run:
