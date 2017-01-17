@@ -1,11 +1,11 @@
 [package]
-name = "gerrit-archiver"
+name = "gerrit-query"
 version = "0.0.1"
 authors = [ "Dolph Mathews <dolph.mathews@gmail.com>" ]
-description = "Archive gerrit code reviews for later analysis."
+description = "Command line interface to execute Gerrit queries."
 license = "Apache-2.0/MIT"
-repository = "https://github.com/dolph/gerrit-archiver"
-documentation = "https://github.com/dolph/gerrit-archiver"
+repository = "https://github.com/dolph/gerrit-query"
+documentation = "https://github.com/dolph/gerrit-query"
 
 [dependencies]
 argparse = "*"

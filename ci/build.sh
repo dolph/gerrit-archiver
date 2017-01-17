@@ -20,7 +20,7 @@ cargo test --verbose
 # Smoke test the result.
 export RUST_LOG=debug
 cargo run
-./target/debug/gerrit-archiver
-./target/debug/gerrit-archiver --help
-./target/debug/gerrit-archiver --version
-./target/debug/gerrit-archiver --verbose
+./target/debug/gerrit-query
+./target/debug/gerrit-query --help
+./target/debug/gerrit-query --version
+./target/debug/gerrit-query --verbose
