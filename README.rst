@@ -1,4 +1,4 @@
-gerrit-archiver
-===============
+gerrit-query
+============
 
-Archive Gerrit code reviews for later analysis.
+Command line interface to execute Gerrit queries.
