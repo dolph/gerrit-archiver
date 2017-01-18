@@ -25,6 +25,7 @@ echo '-----END RSA PRIVATE KEY-----' >> ~/.ssh/id_rsa
 
 apt-get update
 apt-get install -y \
+    python \
     curl \
     ssh \
     ;
