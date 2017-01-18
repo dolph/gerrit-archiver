@@ -60,13 +60,17 @@ ssh-keyscan -p 29418 review.openstack.org >> ~/.ssh/known_hosts
 # Find a relatively high review number. This is not guaranteed to get us the
 # most newest review, but it's likely that the most recent review will be
 # included.
-max=`ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query limit:50 | grep number | sed -e 's/^  number: //' | sort | tail -1`
-iterations=`expr $max / $BATCH_SIZE + 1`
+max=`ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query limit:50 | grep "  number: " | sed -e 's/^  number: //' | sort | tail -1`
+re='^[0-9]+$'
+if ! [[ $max =~ $re ]] ; then
+    echo "Invalid max review value: $max"
+    exit 1
+fi
 
 # Iterate through all reviews, from 1 to our max.
-for iteration in `seq 0 $iterations`;
+for iteration in seq 0 `expr $max / $BATCH_SIZE + 1`;
 do
-    skip_reviews=`expr $BATCH_SIZE \* $iteration`
+    skip_reviews=`expr $iteration \* $BATCH_SIZE`
 
     # Get as much information about the review as we can.
     for i in `seq 1 3`;
