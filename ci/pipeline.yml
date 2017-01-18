@@ -11,8 +11,8 @@ resources:
     branch: master
 - name: weekly
   type: time
-    source:
-    - interval: 7d
+  source:
+    interval: 7d
 
 jobs:
 - name: build
