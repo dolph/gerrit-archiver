@@ -9,6 +9,10 @@ resources:
   source:
     uri: https://github.com/dolph/gerrit-query.git
     branch: master
+- name: weekly
+  type: time
+    source:
+    - interval: 7d
 
 jobs:
 - name: build
@@ -44,3 +48,27 @@ jobs:
       - name: repo
       run:
         path: repo/ci/release.sh
+- name: archive
+  plan:
+  - get: weekly
+    trigger: true
+  - get: repo
+    passed: [build]
+  - task: archive
+    timeout: 7d
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: phusion/baseimage
+      inputs:
+      - name: repo
+      run:
+        path: repo/ci/archive.sh
+        args:
+        - {{ssh_public_key}}
+        - {{ssh_private_key_only}}
+        - {{rack_username}}
+        - {{rack_api_key}}
+        - {{rack_region}}
