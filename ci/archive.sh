@@ -95,24 +95,35 @@ do
     # Prune off the last line of the output, which is just paging data.
     sed -i '$ d' tmp
 
+    # Create a directory to upload files from.
+    mkdir reviews
+
     while IFS='' read -r line || [[ -n "$line" ]]; do
         review_number=`echo $line | python -c "import sys, json; print(json.loads(sys.stdin.read())['number'])"`
 
-        # Upload to CDN.
-        for i in `seq 1 3`;
-        do
-            ./rack files object upload \
-                --container openstack-reviews \
-                --content-type application/json \
-                --name $review_number \
-                --file tmp \
-                > /dev/null \
-                && break || sleep 15
-        done
-
-        counter=$(($counter + 1))
-        echo -ne "$counter / $max\r"
+        # Write JSON to file for upload.
+        echo $line > reviews/$review_number
     done < tmp
 
-    rm tmp;
+    # Clean up tmp file.
+    rm -rf tmp
+
+    # Upload to CDN.
+    for i in `seq 1 3`;
+    do
+        ./rack files object upload-dir \
+            --container openstack-reviews \
+            --concurrency 20 \
+            --content-type application/json \
+            --name $review_number \
+            --dir reviews \
+            > /dev/null \
+            && break || sleep 15
+    done
+
+    # Clean up upload directory.
+    rm -rf reviews
+
+    counter=$(($counter + $BATCH_SIZE))
+    echo -ne "$counter / $max\r"
 done
