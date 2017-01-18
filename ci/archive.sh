@@ -55,21 +55,10 @@ touch ~/.ssh/known_hosts
 chmod 0600 ~/.ssh/known_hosts
 ssh-keyscan -p 29418 review.openstack.org >> ~/.ssh/known_hosts
 
-# Select a review that was updated recently to find a relatively high review
-# number.
-# TODO: figure out a way to find the actual highest review number, without any
-# trial & error.
-ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query \
-    --format JSON \
-    is:open \
-    limit:1 \
-    > tmp
-
-# Prune off the last line of the output.
-sed -i '$ d' tmp
-
-# Read the review number out of the JSON response.
-MAX=`python -c "import json; print(json.loads(open('tmp', 'r').read())['number'])"`
+# Find a relatively high review number. This is not guaranteed to get us the
+# most newest review, but it's likely that the most recent review will be
+# included.
+MAX=`ssh -p 29418 review.openstack.org gerrit query limit:50 | grep number | sed -e 's/^  number: //' | sort | tail -1`
 
 # Iterate through all reviews, from 1 to our max.
 for REVIEW_NUMBER in `seq 1 $MAX`
