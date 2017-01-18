@@ -52,13 +52,13 @@ fi
 # Collect the server's identity.
 touch ~/.ssh/known_hosts
 chmod 0600 ~/.ssh/known_hosts
-ssh-keyscan -p 29418 $SSH_USERNAME@review.openstack.org >> ~/.ssh/known_hosts
+ssh-keyscan -p 29418 review.openstack.org >> ~/.ssh/known_hosts
 
 # Select a review that was updated recently to find a relatively high review
 # number.
 # TODO: figure out a way to find the actual highest review number, without any
 # trial & error.
-ssh -p 29418 review.openstack.org gerrit query \
+ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query \
     --format JSON \
     is:open \
     limit:1 \
@@ -74,7 +74,7 @@ MAX=`python -c "import json; print(json.loads(open('tmp', 'r').read())['number']
 for REVIEW_NUMBER in `seq 1 $MAX`
 do
     # Get as much information about the review as we can.
-    until "ssh -p 29418 review.openstack.org gerrit query \
+    until "ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query \
         --format JSON \
         --all-approvals \
         --all-reviewers \
