@@ -51,7 +51,6 @@ fi
 # Collect the server's identity.
 touch ~/.ssh/known_hosts
 chmod 0600 ~/.ssh/known_hosts
-ssh-keygen -R -p 29418 review.openstack.org
 ssh-keyscan -p 29418 review.openstack.org >> ~/.ssh/known_hosts
 
 # Select a review that was updated recently to find a relatively high review
