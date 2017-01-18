@@ -57,6 +57,9 @@ touch ~/.ssh/known_hosts
 chmod 0600 ~/.ssh/known_hosts
 ssh-keyscan -p 29418 review.openstack.org >> ~/.ssh/known_hosts
 
+# Note the start time.
+echo "Start time: `date`"
+
 # Find a relatively high review number. This is not guaranteed to get us the
 # most newest review, but it's likely that the most recent review will be
 # included.
@@ -127,3 +130,6 @@ do
     counter=$(($counter + $BATCH_SIZE))
     echo -ne "$counter / $max\r"
 done
+
+# Note the end time.
+echo "End time: `date`"
