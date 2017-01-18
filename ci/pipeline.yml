@@ -12,7 +12,7 @@ resources:
 - name: weekly
   type: time
   source:
-    interval: 7d
+    interval: 168h
 
 jobs:
 - name: build
@@ -55,7 +55,7 @@ jobs:
   - get: repo
     passed: [build]
   - task: archive
-    timeout: 7d
+    timeout: 168h
     config:
       platform: linux
       image_resource:
