@@ -70,6 +70,7 @@ fi
 # Iterate through all reviews, from 1 to our max.
 for iteration in seq 0 `expr $max / $BATCH_SIZE + 1`;
 do
+    echo $iteration
     skip_reviews=`expr $iteration \* $BATCH_SIZE`
 
     # Get as much information about the review as we can.
