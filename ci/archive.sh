@@ -61,12 +61,12 @@ ssh-keyscan -p 29418 review.openstack.org >> ~/.ssh/known_hosts
 # most newest review, but it's likely that the most recent review will be
 # included.
 MAX=`ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query limit:50 | grep number | sed -e 's/^  number: //' | sort | tail -1`
-ITERATIONS=expr $MAX / $BATCH_SIZE + 1
+ITERATIONS=`expr $MAX / $BATCH_SIZE + 1`
 
 # Iterate through all reviews, from 1 to our max.
 for $ITERATION in `seq 0 $ITERATIONS`
 do
-    SKIP=expr $BATCH_SIZE \* $ITERATION
+    SKIP=`expr $BATCH_SIZE \* $ITERATION`
 
     # Get as much information about the review as we can.
     for i in 1 2 3;
