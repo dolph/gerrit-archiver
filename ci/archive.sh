@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 SSH_PUBLIC_KEY=$1
 SSH_PRIVATE_KEY_BODY=$2
