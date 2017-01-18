@@ -68,7 +68,8 @@ if ! [[ $max =~ $re ]] ; then
 fi
 
 # Iterate through all reviews, from 1 to our max.
-for iteration in seq 0 `expr $max / $BATCH_SIZE + 1`;
+iterations=`expr $max / $BATCH_SIZE + 1`
+for iteration in `seq 0 $iterations`;
 do
     echo $iteration
     skip_reviews=`expr $iteration \* $BATCH_SIZE`
