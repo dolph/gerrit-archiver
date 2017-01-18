@@ -75,34 +75,36 @@ MAX=`python -c "import json; print(json.loads(open('tmp', 'r').read())['number']
 for REVIEW_NUMBER in `seq 1 $MAX`
 do
     # Get as much information about the review as we can.
-    until "ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query \
-        --format JSON \
-        --all-approvals \
-        --all-reviewers \
-        --comments \
-        --current-patch-set \
-        --dependencies \
-        --files \
-        --patch-sets \
-        --submit-records \
-        $REVIEW_NUMBER \
-        limit:1 \
-        > tmp"
+    for i in 1 2 3;
     do
-        sleep 15
+        ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query \
+            --format JSON \
+            --all-approvals \
+            --all-reviewers \
+            --comments \
+            --current-patch-set \
+            --dependencies \
+            --files \
+            --patch-sets \
+            --submit-records \
+            $REVIEW_NUMBER \
+            limit:1 \
+            > tmp \
+            && break || sleep 15
     done
 
     # Prune off the last line of the output.
     sed -i '$ d' tmp
 
     # Upload to CDN.
-    until "rack files object upload \
-        --container openstack-reviews \
-        --content-type application/json \
-        --name $REVIEW_NUMBER \
-        --file tmp"
+    for i in 1 2 3;
     do
-        sleep 15
+        rack files object upload \
+            --container openstack-reviews \
+            --content-type application/json \
+            --name $REVIEW_NUMBER \
+            --file tmp \
+            && break || sleep 15
     done
 
     rm tmp;
