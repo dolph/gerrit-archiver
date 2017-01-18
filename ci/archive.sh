@@ -68,6 +68,7 @@ if ! [[ $max =~ $re ]] ; then
 fi
 
 # Iterate through all reviews, from 1 to our max.
+counter=0
 for iteration in `seq 0 $(($max / $BATCH_SIZE + 1))`;
 do
     skip_reviews=$(($iteration * $BATCH_SIZE))
@@ -109,7 +110,8 @@ do
                 && break || sleep 15
         done
 
-        echo -ne "$review_number / $max\r"
+        counter=$(($counter + 1))
+        echo -ne "$counter / $max\r"
     done < tmp
 
     rm tmp;
