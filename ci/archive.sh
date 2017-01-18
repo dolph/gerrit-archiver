@@ -116,7 +116,7 @@ do
     do
         ./rack files object upload-dir \
             --container openstack-reviews \
-            --concurrency 20 \
+            --concurrency $BATCH_SIZE \
             --content-type application/json \
             --name $review_number \
             --dir reviews \
