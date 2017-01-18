@@ -8,6 +8,8 @@ RACK_USERNAME=$4
 RACK_API_KEY=$5
 RACK_REGION=$6
 
+BATCH_SIZE=500
+
 # Drop the public key into place.
 mkdir -p ~/.ssh/
 touch ~/.ssh/id_rsa.pub
@@ -59,10 +61,13 @@ ssh-keyscan -p 29418 review.openstack.org >> ~/.ssh/known_hosts
 # most newest review, but it's likely that the most recent review will be
 # included.
 MAX=`ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query limit:50 | grep number | sed -e 's/^  number: //' | sort | tail -1`
+ITERATIONS=expr $MAX / $BATCH_SIZE + 1
 
 # Iterate through all reviews, from 1 to our max.
-for REVIEW_NUMBER in `seq 1 $MAX`
+for $ITERATION in `seq 0 $ITERATIONS`
 do
+    SKIP=expr $BATCH_SIZE \* $ITERATION
+
     # Get as much information about the review as we can.
     for i in 1 2 3;
     do
@@ -76,28 +81,32 @@ do
             --files \
             --patch-sets \
             --submit-records \
-            $REVIEW_NUMBER \
-            limit:1 \
+            -S $SKIP \
+            limit:$BATCH_SIZE \
             > tmp \
             && break || sleep 15
     done
 
-    # Prune off the last line of the output.
+    # Prune off the last line of the output, which is just paging data.
     sed -i '$ d' tmp
 
-    # Upload to CDN.
-    for i in 1 2 3;
-    do
-        ./rack files object upload \
-            --container openstack-reviews \
-            --content-type application/json \
-            --name $REVIEW_NUMBER \
-            --file tmp \
-            > /dev/null \
-            && break || sleep 15
-    done
+    while IFS='' read -r line || [[ -n "$line" ]]; do
+        review_number=python -c "import sys, json; print(json.loads(sys.stdin.read())['number'])"
+
+        # Upload to CDN.
+        for i in 1 2 3;
+        do
+            ./rack files object upload \
+                --container openstack-reviews \
+                --content-type application/json \
+                --name $review_number \
+                --file tmp \
+                > /dev/null \
+                && break || sleep 15
+        done
+
+        echo -ne "$review_number / $MAX\r"
+    done < tmp
 
     rm tmp;
-
-    echo -ne "$REVIEW_NUMBER / $MAX\r"
 done
