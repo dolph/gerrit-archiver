@@ -99,7 +99,7 @@ do
     # Upload to CDN.
     for i in 1 2 3;
     do
-        rack files object upload \
+        ./rack files object upload \
             --container openstack-reviews \
             --content-type application/json \
             --name $REVIEW_NUMBER \
