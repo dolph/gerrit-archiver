@@ -9,7 +9,7 @@ RACK_API_KEY=$5
 RACK_REGION=$6
 
 BATCH_SIZE=50
-UPLOAD_CONCURRENCY=$((2 * `lscpu -p | grep "^[^#;]" | wc -l`))
+UPLOAD_CONCURRENCY=$((`lscpu -p | grep "^[^#;]" | wc -l`))
 
 # Drop the public key into place.
 mkdir -p ~/.ssh/
