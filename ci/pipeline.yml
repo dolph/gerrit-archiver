@@ -54,7 +54,6 @@ jobs:
     trigger: true
   - get: repo
     trigger: true
-    passed: [build]
   - task: archive
     timeout: 168h
     serial: true
