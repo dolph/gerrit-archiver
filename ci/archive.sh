@@ -105,7 +105,7 @@ do
             --content-type application/json \
             --name $REVIEW_NUMBER \
             --file tmp \
-            > /dev/null
+            > /dev/null \
             && break || sleep 15
     done
 
