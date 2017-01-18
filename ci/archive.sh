@@ -64,7 +64,7 @@ MAX=`ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query limit:50 | gre
 ITERATIONS=`expr $MAX / $BATCH_SIZE + 1`
 
 # Iterate through all reviews, from 1 to our max.
-for $ITERATION in `seq 0 $ITERATIONS`
+for ITERATION in `seq 0 $ITERATIONS`
 do
     SKIP=`expr $BATCH_SIZE \* $ITERATION`
 
