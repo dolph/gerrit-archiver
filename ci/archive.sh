@@ -9,6 +9,7 @@ RACK_API_KEY=$5
 RACK_REGION=$6
 
 BATCH_SIZE=50
+UPLOAD_CONCURRENCY=$((2 * `lscpu -p | grep "^[^#;]" | wc -l`))
 
 # Drop the public key into place.
 mkdir -p ~/.ssh/
@@ -116,7 +117,7 @@ do
     do
         ./rack files object upload-dir \
             --container openstack-reviews \
-            --concurrency $BATCH_SIZE \
+            --concurrency $UPLOAD_CONCURRENCY \
             --content-type application/json \
             --name $review_number \
             --dir reviews \
