@@ -64,12 +64,12 @@ max=`ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query limit:50 | gre
 iterations=`expr $max / $BATCH_SIZE + 1`
 
 # Iterate through all reviews, from 1 to our max.
-for iteration in `seq 0 $iterations`
+for iteration in `seq 0 $iterations`;
 do
     skip_reviews=`expr $BATCH_SIZE \* $iteration`
 
     # Get as much information about the review as we can.
-    for i in 1 2 3;
+    for i in `seq 1 3`;
     do
         ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query \
             --format JSON \
@@ -94,7 +94,7 @@ do
         review_number=python -c "import sys, json; print(json.loads(sys.stdin.read())['number'])"
 
         # Upload to CDN.
-        for i in 1 2 3;
+        for i in `seq 1 3`;
         do
             ./rack files object upload \
                 --container openstack-reviews \
