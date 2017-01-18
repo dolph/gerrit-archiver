@@ -68,7 +68,7 @@ MAX=`python -c "import json; print(json.loads(open('tmp', 'r').read())['number']
 for REVIEW_NUMBER in `seq 1 $MAX`
 do
     # Get as much information about the review as we can.
-    try ssh -p 29418 review.openstack.org gerrit query \
+    until "ssh -p 29418 review.openstack.org gerrit query \
         --format JSON \
         --all-approvals \
         --all-reviewers \
@@ -80,17 +80,23 @@ do
         --submit-records \
         $REVIEW_NUMBER \
         limit:1 \
-        > tmp
+        > tmp"
+    do
+        sleep 15
+    done
 
     # Prune off the last line of the output.
     sed -i '$ d' tmp
 
     # Upload to CDN.
-    try rack files object upload \
+    until "rack files object upload \
         --container openstack-reviews \
         --content-type application/json \
         --name $REVIEW_NUMBER \
-        --file tmp
+        --file tmp"
+    do
+        sleep 15
+    done
 
     rm tmp;
 done
