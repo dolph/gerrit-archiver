@@ -37,7 +37,7 @@ if [ ! -f rack ]; then
 fi
 
 # Configure rack client if it's not already
-if [ $# -eq 6 ]; then
+if [ $# -eq 5 ]; then
     echo "Configuring the rack client..."
     mkdir ~/.rack/
     echo "username = $RACK_USERNAME" > ~/.rack/config
