@@ -70,7 +70,6 @@ sed -i '$ d' tmp
 
 # Read the review number out of the JSON response.
 MAX=`python -c "import json; print(json.loads(open('tmp', 'r').read())['number'])"`
-echo "Max: $MAX"
 
 # Iterate through all reviews, from 1 to our max.
 for REVIEW_NUMBER in `seq 1 $MAX`
@@ -111,5 +110,5 @@ do
 
     rm tmp;
 
-    echo -n "$REVIEW_NUMBER "
+    echo -ne "$REVIEW_NUMBER / $MAX\r"
 done
