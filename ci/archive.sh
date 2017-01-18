@@ -95,7 +95,7 @@ do
     sed -i '$ d' tmp
 
     while IFS='' read -r line || [[ -n "$line" ]]; do
-        review_number=python -c "import sys, json; print(json.loads(sys.stdin.read())['number'])"
+        review_number=`echo $line | python -c "import sys, json; print(json.loads(sys.stdin.read())['number'])"`
 
         # Upload to CDN.
         for i in `seq 1 3`;
