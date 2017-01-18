@@ -8,7 +8,7 @@ RACK_USERNAME=$4
 RACK_API_KEY=$5
 RACK_REGION=$6
 
-BATCH_SIZE=20
+BATCH_SIZE=50
 
 # Drop the public key into place.
 mkdir -p ~/.ssh/
