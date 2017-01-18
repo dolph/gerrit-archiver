@@ -3,9 +3,10 @@ set -ex
 
 SSH_PUBLIC_KEY=$1
 SSH_PRIVATE_KEY_BODY=$2
-RACK_USERNAME=$3
-RACK_API_KEY=$4
-RACK_REGION=$5
+SSH_USERNAME=$3
+RACK_USERNAME=$4
+RACK_API_KEY=$5
+RACK_REGION=$6
 
 # Drop the public key into place.
 mkdir -p ~/.ssh/
@@ -37,7 +38,7 @@ if [ ! -f rack ]; then
 fi
 
 # Configure rack client if it's not already
-if [ $# -eq 5 ]; then
+if [ $# -eq 6 ]; then
     echo "Configuring the rack client..."
     mkdir ~/.rack/
     echo "username = $RACK_USERNAME" > ~/.rack/config
@@ -51,7 +52,7 @@ fi
 # Collect the server's identity.
 touch ~/.ssh/known_hosts
 chmod 0600 ~/.ssh/known_hosts
-ssh-keyscan -p 29418 review.openstack.org >> ~/.ssh/known_hosts
+ssh-keyscan -p 29418 $SSH_USERNAME@review.openstack.org >> ~/.ssh/known_hosts
 
 # Select a review that was updated recently to find a relatively high review
 # number.
