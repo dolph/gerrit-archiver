@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 SSH_PUBLIC_KEY=$1
 SSH_PRIVATE_KEY_BODY=$2
@@ -9,7 +9,6 @@ RACK_API_KEY=$5
 RACK_REGION=$6
 
 BATCH_SIZE=50
-UPLOAD_CONCURRENCY=1
 
 # Drop the public key into place.
 mkdir -p ~/.ssh/
@@ -113,16 +112,18 @@ do
     rm -rf tmp
 
     # Upload to CDN.
-    for i in `seq 1 3`;
+    for f in reviews/*;
     do
-        ./rack files object upload-dir \
-            --container openstack-reviews \
-            --concurrency $UPLOAD_CONCURRENCY \
-            --content-type application/json \
-            --name $review_number \
-            --dir reviews \
-            > /dev/null \
-            && break || sleep 15
+        for i in `seq 1 3`;
+        do
+            ./rack files object upload \
+                --container openstack-reviews \
+                --content-type application/json \
+                --name `basename $f` \
+                --file $f \
+                > /dev/null \
+                && break || sleep 15
+        done
     done
 
     # Clean up upload directory.
