@@ -9,7 +9,8 @@ RACK_API_KEY=$5
 RACK_REGION=$6
 RACK_CONTAINER=$7
 
-BATCH_SIZE=50
+DIR=`dirname $(readlink -f $0)`
+BATCH_SIZE=10
 
 # Drop the public key into place.
 mkdir -p ~/.ssh/
@@ -106,17 +107,13 @@ do
     # Upload to CDN.
     for f in reviews/*;
     do
-        for i in `seq 1 3`;
-        do
-            curl \
-                --silent \
-                --request PUT \
-                $ENDPOINT/$RACK_CONTAINER/`basename $f` \
-                --header "X-Auth-Token: $TOKEN" \
-                --header "Content-Type: application/json" \
-                --upload-file $f \
-                && break
-        done
+        bash $DIR/archive-uploader.sh "$ENDPOINT" "$RACK_CONTAINER" "$TOKEN" "$f" &
+    done
+
+    # Wait on all uploads to finish.
+    for job in `jobs -p`
+    do
+        wait $job
     done
 
     # Clean up upload directory.
