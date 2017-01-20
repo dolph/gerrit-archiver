@@ -32,26 +32,6 @@ apt-get install -y \
     ssh \
     ;
 
-# Download the rack client if it's not already.
-if [ ! -f rack ]; then
-    echo "Downloading the rack client..."
-    # Linux 64-bit binary
-    curl https://ec4a542dbf90c03b9f75-b342aba65414ad802720b41e8159cf45.ssl.cf5.rackcdn.com/1.2/Linux/amd64/rack > rack
-    chmod +x rack
-fi
-
-# Configure rack client if it's not already
-if [ $# -eq 6 ]; then
-    echo "Configuring the rack client..."
-    mkdir ~/.rack/
-    echo "username = $RACK_USERNAME" > ~/.rack/config
-    echo "api-key = $RACK_API_KEY" >> ~/.rack/config
-    echo "region = $RACK_REGION" >> ~/.rack/config
-elif [ ! -f ~/.rack/config ]; then
-    echo "Configuring the rack client (interactive)..."
-    ./rack configure
-fi
-
 # Collect the server's identity.
 touch ~/.ssh/known_hosts
 chmod 0600 ~/.ssh/known_hosts
@@ -75,6 +55,17 @@ counter=0
 for iteration in `seq 0 $(($max / $BATCH_SIZE + 1))`;
 do
     skip_reviews=$(($iteration * $BATCH_SIZE))
+
+    # Re-auth for each batch.
+    curl \
+        --silent \
+        --reqeust POST \
+        https://identity.api.rackspacecloud.com/v2.0/tokens \
+        --header "Content-type: application/json" \
+        --data "{\"auth\":{\"RAX-KSKEY:apiKeyCredentials\":{\"username\":\"$RACK_USERNAME\",\"apiKey\":\"$RACK_API_KEY\"}}}" \
+        > auth_response.json
+    TOKEN=`python -c "import json; d = json.loads(open('auth_response.json', 'r').read()); print(d['access']['token']['id']);"`
+    ENDPOINT=`python -c "import json; d = json.loads(open('auth_response.json', 'r').read()); endpoints = [x['endpoints'] for x in d['access']['serviceCatalog'] if x['type'] == 'object-store'].pop(); print([x['publicURL'] for x in endpoints if x['region'] == '$RACK_REGION'].pop());"`
 
     # Get as much information about the review as we can.
     for i in `seq 1 3`;
@@ -116,13 +107,14 @@ do
     do
         for i in `seq 1 3`;
         do
-            ./rack files object upload \
-                --container openstack-reviews \
-                --content-type application/json \
-                --name `basename $f` \
-                --file $f \
-                > /dev/null \
-                && break || sleep 15
+            curl \
+                --quiet \
+                --request PUT \
+                $ENDPOINT/$RACK_CONTAINER/`basename $f` \
+                --header "X-Auth-Token: $TOKEN" \
+                --header "Content-Type: application/json" \
+                --upload-file $f \
+                && break
         done
     done
 
