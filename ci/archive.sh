@@ -108,7 +108,7 @@ do
         for i in `seq 1 3`;
         do
             curl \
-                --quiet \
+                --silent \
                 --request PUT \
                 $ENDPOINT/$RACK_CONTAINER/`basename $f` \
                 --header "X-Auth-Token: $TOKEN" \
