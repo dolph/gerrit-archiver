@@ -15,5 +15,5 @@ do
         --header "X-Auth-Token: $TOKEN" \
         --header "Content-Type: application/json" \
         --upload-file $f \
-        && break
+        && break || sleep 1
 done

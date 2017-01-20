@@ -59,13 +59,16 @@ do
     skip_reviews=$(($iteration * $BATCH_SIZE))
 
     # Re-auth for each batch.
-    curl \
-        --silent \
-        --request POST \
-        https://identity.api.rackspacecloud.com/v2.0/tokens \
-        --header "Content-type: application/json" \
-        --data "{\"auth\":{\"RAX-KSKEY:apiKeyCredentials\":{\"username\":\"$RACK_USERNAME\",\"apiKey\":\"$RACK_API_KEY\"}}}" \
-        > auth_response.json
+    for i in `seq 1 10`;
+    do
+        curl \
+            --silent \
+            --request POST \
+            https://identity.api.rackspacecloud.com/v2.0/tokens \
+            --header "Content-type: application/json" \
+            --data "{\"auth\":{\"RAX-KSKEY:apiKeyCredentials\":{\"username\":\"$RACK_USERNAME\",\"apiKey\":\"$RACK_API_KEY\"}}}" \
+            > auth_response.json && break || sleep 1
+    done
     TOKEN=`python -c "import json; d = json.loads(open('auth_response.json', 'r').read()); print(d['access']['token']['id']);"`
     ENDPOINT=`python -c "import json; d = json.loads(open('auth_response.json', 'r').read()); endpoints = [x['endpoints'] for x in d['access']['serviceCatalog'] if x['type'] == 'object-store'].pop(); print([x['publicURL'] for x in endpoints if x['region'] == '$RACK_REGION'].pop());"`
 
