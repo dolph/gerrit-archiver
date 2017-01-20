@@ -59,7 +59,7 @@ do
     # Re-auth for each batch.
     curl \
         --silent \
-        --reqeust POST \
+        --request POST \
         https://identity.api.rackspacecloud.com/v2.0/tokens \
         --header "Content-type: application/json" \
         --data "{\"auth\":{\"RAX-KSKEY:apiKeyCredentials\":{\"username\":\"$RACK_USERNAME\",\"apiKey\":\"$RACK_API_KEY\"}}}" \
