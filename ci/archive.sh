@@ -10,7 +10,7 @@ RACK_REGION=$6
 RACK_CONTAINER=$7
 
 DIR=`dirname $(readlink -f $0)`
-BATCH_SIZE=10
+BATCH_SIZE=25
 
 # Drop the public key into place.
 mkdir -p ~/.ssh/
