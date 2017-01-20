@@ -87,28 +87,28 @@ do
             --submit-records \
             -S $skip_reviews \
             limit:$BATCH_SIZE \
-            > tmp \
+            > $DIR/tmp \
             && break || sleep 15
     done
 
     # Prune off the last line of the output, which is just paging data.
-    sed -i '$ d' tmp
+    sed -i '$ d' $DIR/tmp
 
     # Create a directory to upload files from.
-    mkdir reviews
+    mkdir $DIR/reviews
 
     while IFS='' read -r line || [[ -n "$line" ]]; do
         review_number=`echo $line | python -c "import sys, json; print(json.loads(sys.stdin.read())['number'])"`
 
         # Write JSON to file for upload.
-        echo $line > reviews/$review_number
-    done < tmp
+        echo $line > $DIR/reviews/$review_number
+    done < $DIR/tmp
 
     # Clean up tmp file.
-    rm -rf tmp
+    rm -rf $DIR/tmp
 
     # Upload to CDN.
-    for f in reviews/*;
+    for f in $DIR/reviews/*;
     do
         bash $DIR/archive-uploader.sh "$ENDPOINT" "$RACK_CONTAINER" "$TOKEN" "$f" &
     done
@@ -120,7 +120,7 @@ do
     done
 
     # Clean up upload directory.
-    rm -rf reviews
+    rm -rf $DIR/reviews
 
     counter=$(($counter + $BATCH_SIZE))
     echo -ne "$counter / $max\r"
