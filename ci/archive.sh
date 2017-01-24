@@ -3,7 +3,7 @@ set -e
 
 SSH_PUBLIC_KEY=$1
 SSH_PRIVATE_KEY_BODY=$2
-SSH_USERNAME=$3
+GERRIT_USERNAME=$3
 RACK_USERNAME=$4
 RACK_API_KEY=$5
 RACK_REGION=$6
@@ -45,7 +45,7 @@ echo "Start time: `date`"
 # Find a relatively high review number. This is not guaranteed to get us the
 # most newest review, but it's likely that the most recent review will be
 # included.
-max=`ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query limit:50 | grep "  number: " | sed -e 's/^  number: //' | sort | tail -1`
+max=`ssh -p 29418 $GERRIT_USERNAME@review.openstack.org gerrit query limit:50 | grep "  number: " | sed -e 's/^  number: //' | sort | tail -1`
 re='^[0-9]+$'
 if ! [[ $max =~ $re ]] ; then
     echo "Invalid max review value: $max"
@@ -75,7 +75,7 @@ do
     # Get as much information about the review as we can.
     for i in `seq 1 3`;
     do
-        ssh -p 29418 $SSH_USERNAME@review.openstack.org gerrit query \
+        ssh -p 29418 $GERRIT_USERNAME@review.openstack.org gerrit query \
             --format JSON \
             --all-approvals \
             --all-reviewers \
