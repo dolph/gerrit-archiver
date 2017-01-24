@@ -74,4 +74,4 @@ jobs:
         - {{rack_username}}
         - {{rack_api_key}}
         - {{rack_region}}
-        - {{rack_container}}
+        - openstack-reviews
